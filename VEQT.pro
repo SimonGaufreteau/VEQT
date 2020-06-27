@@ -17,10 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    purplerain.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    purplerain.h
 
 FORMS += \
     mainwindow.ui
