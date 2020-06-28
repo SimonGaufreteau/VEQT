@@ -17,12 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    matrixwidget.cpp \
     menuwindow.cpp \
-    purplerain.cpp
+    purplerain.cpp \
 
 HEADERS += \
+    matrixwidget.h \
     menuwindow.h \
-    purplerain.h
+    purplerain.h \
 
 FORMS += \
     menuwindow.ui
