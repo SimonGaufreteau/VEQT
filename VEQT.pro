@@ -17,15 +17,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
+    menuwindow.cpp \
     purplerain.cpp
 
 HEADERS += \
-    mainwindow.h \
+    menuwindow.h \
     purplerain.h
 
 FORMS += \
-    mainwindow.ui
+    menuwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
