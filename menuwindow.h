@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include "mainwindow.h"
 #include "purplerain.h"
 
 namespace Ui {
