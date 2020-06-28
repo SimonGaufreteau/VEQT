@@ -46,6 +46,11 @@
           <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Matrix</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

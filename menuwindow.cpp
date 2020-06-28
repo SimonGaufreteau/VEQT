@@ -1,6 +1,7 @@
 #include "menuwindow.h"
 #include "ui_menuwindow.h"
 
+
 MenuWindow::MenuWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MenuWindow)
@@ -21,6 +22,9 @@ void MenuWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     if(item->text()=="Purple Rain")
     {
         mainWidget = new PurpleRain(w);
+    }
+    else if(item->text()=="Matrix"){
+        mainWidget = new MatrixWidget(w);
     }
     else{
         delete(w);

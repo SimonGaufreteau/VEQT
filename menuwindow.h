@@ -5,6 +5,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include "purplerain.h"
+#include "matrixwidget.h"
 
 namespace Ui {
 class MenuWindow;
