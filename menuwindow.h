@@ -2,6 +2,10 @@
 #define MENUWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include "mainwindow.h"
+#include "purplerain.h"
 
 namespace Ui {
 class MenuWindow;
@@ -14,6 +18,9 @@ class MenuWindow : public QMainWindow
 public:
     explicit MenuWindow(QWidget *parent = nullptr);
     ~MenuWindow();
+
+private slots:
+    void on_listWidget_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::MenuWindow *ui;
