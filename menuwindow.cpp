@@ -26,6 +26,9 @@ void MenuWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     else if(item->text()=="Matrix"){
         mainWidget = new MatrixWidget(w);
     }
+    else if(item->text()=="Boids"){
+        mainWidget = new BoidsWidget(w);
+    }
     else{
         delete(w);
         return;

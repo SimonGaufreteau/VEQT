@@ -51,6 +51,11 @@
           <string>Matrix</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Boids</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
