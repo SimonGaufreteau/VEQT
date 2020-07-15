@@ -1,7 +1,7 @@
 #include "boidswidget.h"
 #include "QDebug"
 
-BoidsWidget::BoidsWidget(QWidget *parent) : QWidget(parent)
+BoidsWidget::BoidsWidget(QWidget *parent) : QWidget(parent),m_timer(this)
 {
      for(int i=0;i<listSize;i++){
          QPoint position(rand()%(parent->width()),rand()%(parent->height()));
@@ -28,7 +28,6 @@ void BoidsWidget::paintEvent(QPaintEvent *event){
         path.lineTo(rect.left() + (rect.width() / 2), rect.top());
         painter.fillPath(path, QBrush(QColor ("blue")));
     }
-
 }
 
 void BoidsWidget::paintMoveBoids(){
@@ -39,19 +38,53 @@ void BoidsWidget::paintMoveBoids(){
 
 
 void BoidsWidget::move_boids(){
+    QVector2D v1,v2,v3;
+    for(int i=0;i<boidList.length();i++){
+        Boid* b = &boidList[i];
+        v1 = cohesion(*b);
+        v2 = alignment(*b);
+        v3 = separation(*b);
+
+        //qDebug() << "Before " << b->toString();
+        //qDebug() << "Cohesion : "<< v1 << " / Alignement : "<<v2 << " / Separation : "<<v3;
+        b->velocity += v1 + v2 + v3;
+        b->position.setX(b->position.x()+b->velocity.x());
+        b->position.setY(b->position.y()+b->velocity.y());
+        //qDebug() << "After " << b->toString();
+    }
 
 }
 
+//This rule describes how a boid will try to fly towards the centre of mass of neighbouring boids.
+//For now all the boids are taken into account. TODO : only take the neighbours
+QVector2D BoidsWidget::cohesion(Boid b){
+    QVector2D center;
 
-QVector2D BoidsWidget::cohesion(){
+    //Calculating the centre of mass of all other boids
+    for(int i=0;i<boidList.length();i++){
+        Boid tempBoid = boidList[i];
+        if(&b!=&tempBoid){
+            center.setX(center.x()+tempBoid.position.x());
+            center.setY(center.y()+tempBoid.position.y());
+        }
+    }
+    center/=(boidList.length()-1);
+
+    //Setting the result to make the boid move towards this centre by a certain %
+    center.setX(center.x()-b.position.x());
+    center.setY(center.y()-b.position.y());
+    return center/cohesionRatio;
+}
+
+QVector2D BoidsWidget::alignment(Boid b){
 
 }
 
-QVector2D BoidsWidget::alignment(){
+QVector2D BoidsWidget::separation(Boid b){
 
 }
 
-QVector2D BoidsWidget::separation(){
-
+BoidsWidget::~BoidsWidget(){
+    qDebug() << "Deleting the Boids";
 }
 

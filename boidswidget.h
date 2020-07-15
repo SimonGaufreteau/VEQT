@@ -13,19 +13,21 @@ class BoidsWidget : public QWidget
 public:
     explicit BoidsWidget(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *event);
+     ~BoidsWidget();
 private:
     QTimer m_timer;
     QVector<Boid> boidList;
 
     static const int listSize = 5;
-    static const int time = 5;
+    static const int time =200;
     static const int boidWidth = 20;
     static const int boidHeight = 20;
+    static const int cohesionRatio = 10;
 
     void move_boids();
-    QVector2D cohesion();
-    QVector2D alignment();
-    QVector2D separation();
+    QVector2D cohesion(Boid b);
+    QVector2D alignment(Boid b);
+    QVector2D separation(Boid b);
 
 private slots:
     void paintMoveBoids();
