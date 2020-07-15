@@ -16,7 +16,7 @@ MenuWindow::~MenuWindow()
 
 void MenuWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    QMainWindow* w = new QMainWindow();
+    QMainWindow* w = new QMainWindow(this);
     w->setMinimumSize(800,600);
     QWidget* mainWidget;
     if(item->text()=="Purple Rain")
@@ -36,5 +36,6 @@ void MenuWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     w->setCentralWidget(mainWidget);
     w->setWindowTitle(item->text());
     w->setWindowIcon(item->icon());
+    w->setAttribute(Qt::WA_DeleteOnClose,true);
     w->show();
 }
