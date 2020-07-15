@@ -47,9 +47,17 @@ void BoidsWidget::move_boids(){
 
         //qDebug() << "Before " << b->toString();
         //qDebug() << "Cohesion : "<< v1 << " / Alignement : "<<v2 << " / Separation : "<<v3;
-        b->velocity += v1 + v2 + v3;
+        b->velocity = v1 + v2 + v3;
         b->position.setX(b->position.x()+b->velocity.x());
         b->position.setY(b->position.y()+b->velocity.y());
+
+        //Moving the boids to the opposite side if they cross the screen
+        if(b->position.x()>this->width()) b->position.setX(0);
+        else if(b->position.x()<0) b->position.setX(this->width());
+
+        if(b->position.y()>this->height())b->position.setY(0);
+        else if(b->position.y()<0) b->position.setY(this->height());
+
         //qDebug() << "After " << b->toString();
     }
 

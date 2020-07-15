@@ -18,11 +18,11 @@ private:
     QTimer m_timer;
     QVector<Boid> boidList;
 
-    static const int listSize = 5;
-    static const int time =200;
+    static const int listSize = 20;
+    static const int time =10;
     static const int boidWidth = 20;
     static const int boidHeight = 20;
-    static const int cohesionRatio = 10;
+    static const int cohesionRatio = 100;
 
     void move_boids();
     QVector2D cohesion(Boid b);
