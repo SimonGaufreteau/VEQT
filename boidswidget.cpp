@@ -43,22 +43,22 @@ void BoidsWidget::move_boids(){
         Boid* b = &boidList[i];
         v1 = cohesion(*b);
         //v2 = alignment(*b);
-        //v3 = separation(*b);
+        v3 = separation(*b);
 
-        //qDebug() << "Before " << b->toString();
         //qDebug() << "Cohesion : "<< v1 << " / Alignement : "<<v2 << " / Separation : "<<v3;
-        //if(qAbs(v1.x()+v2.x()+v3.x())>0.1 || qAbs(v1.y()+v2.y()+v3.y()>0.1))
-            b->velocity += v1 + v2 + v3;
-        if(b->velocity.x()>max_velocity || b->velocity.x()<-max_velocity)b->velocity.setX(b->velocity.x()*velocity_ratio);
-        if(b->velocity.y()>max_velocity || b->velocity.y()<-max_velocity)b->velocity.setY(b->velocity.y()*velocity_ratio);
+        b->velocity += v1 + v2 + v3;
+
+        //Checking for the max velocity
+        if(b->velocity.x()>max_velocity || b->velocity.x()<-max_velocity)b->velocity.setX(b->velocity.x()*maxVelocityRatio);
+        if(b->velocity.y()>max_velocity || b->velocity.y()<-max_velocity)b->velocity.setY(b->velocity.y()*maxVelocityRatio);
 
         b->position.setX(b->position.x()+b->velocity.x());
         b->position.setY(b->position.y()+b->velocity.y());
 
-        //Moving the boids off the wall smoothly if they come too close
+        //Moving the boids off the wall if they come too close
         if(b->position.x()>this->width()-wallDistance)
             b->velocity.setX(b->velocity.x()-qAbs(b->position.x()-this->width())/wallRatio);
-        else if(b->position.x()<wallDistance)
+        else    if(b->position.x()<wallDistance)
             b->velocity.setX(b->velocity.x()+qAbs(b->position.x())/wallRatio);
 
         if(b->position.y()>this->height()-wallDistance)
@@ -66,7 +66,7 @@ void BoidsWidget::move_boids(){
         else if(b->position.y()<wallDistance)
             b->velocity.setY(b->velocity.y()+qAbs(b->position.y())/wallRatio);
 
-       // qDebug() << "After " << b->toString();
+        //qDebug() << "i =  "<< i << " / boid : " << b->toString();
     }
 
 }
@@ -95,8 +95,6 @@ QVector2D BoidsWidget::cohesion(Boid b){
         return QVector2D(0,0);
 
     center/=count;
-    //qDebug()<<"Centre : "<<center;
-    //qDebug() <<"Position : "<<b.position;
 
     //Setting the result to make the boid move towards this centre by a certain %
     center.setX(center.x()-b.position.x());
