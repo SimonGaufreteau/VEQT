@@ -5,7 +5,10 @@ BoidsWidget::BoidsWidget(QWidget *parent) : QWidget(parent),m_timer(this)
 {
      for(int i=0;i<listSize;i++){
          QPoint position(rand()%(parent->width()),rand()%(parent->height()));
-         QVector2D velocity(rand()%2+1,rand()%2+1);
+         int signY,signX;
+         signY=rand()%2?-1:1;
+         signX=rand()%2?-1:1;
+         QVector2D velocity(signX*(float)(rand()%100)/100,signY*(float)(rand()%100)/100);
          Boid tempBoid(position,velocity);
          boidList.append(tempBoid);
      }
