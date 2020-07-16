@@ -19,12 +19,13 @@ private:
     QTimer m_timer;
     QVector<Boid> boidList;
 
-    static const int listSize = 50;
+    static const int listSize = 100;
     static const int time = 10;
     static const int boidWidth = 20;
     static const int boidHeight = 20;
-    static const int cohesionRatio = 600;
+    static const int cohesionRatio = 800;
     static const int separationRatio = 20;
+    static const int alignementRatio = 800;
     static const int distance = 100;
     static const int wallRatio = 50;
     static const int wallDistance = 100;
