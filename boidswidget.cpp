@@ -56,7 +56,7 @@ void BoidsWidget::move_boids(){
         b->position.setY(b->position.y()+b->velocity.y());
 
         //Moving the boids off the wall if they come too close
-        if(b->position.x()>this->width()-wallDistance)
+        /*if(b->position.x()>this->width()-wallDistance)
             b->velocity.setX(b->velocity.x()-qAbs(b->position.x()-this->width())/wallRatio);
         else    if(b->position.x()<wallDistance)
             b->velocity.setX(b->velocity.x()+qAbs(b->position.x())/wallRatio);
@@ -64,7 +64,18 @@ void BoidsWidget::move_boids(){
         if(b->position.y()>this->height()-wallDistance)
             b->velocity.setY(b->velocity.y()-qAbs(b->position.y()-this->height())/wallRatio);
         else if(b->position.y()<wallDistance)
-            b->velocity.setY(b->velocity.y()+qAbs(b->position.y())/wallRatio);
+            b->velocity.setY(b->velocity.y()+qAbs(b->position.y())/wallRatio);*/
+
+        //Moving the boids to the opposite side of the screen
+        if(b->position.x()>this->width())
+            b->position.setX(0);
+        else if(b->position.x()<0)
+            b->position.setX(this->width());
+
+        if(b->position.y()>this->height())
+            b->position.setY(0);
+        else if(b->position.y()<0)
+            b->position.setY(this->height());
 
         //qDebug() << "i =  "<< i << " / boid : " << b->toString();
     }
@@ -115,7 +126,7 @@ QVector2D BoidsWidget::separation(Boid b){
         Boid tempBoid = boidList[i];
         if(&b!=&tempBoid){
             //qDebug() << qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2));
-            if(qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2))<distance){
+            if(qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2))<boidWidth){
                 result.setX(result.x()-(tempBoid.position.x()-b.position.x()));
                 result.setY(result.y()-(tempBoid.position.y()-b.position.y()));
             }

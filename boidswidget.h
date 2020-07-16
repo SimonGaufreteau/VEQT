@@ -23,13 +23,13 @@ private:
     static const int time = 10;
     static const int boidWidth = 20;
     static const int boidHeight = 20;
-    static const int cohesionRatio = 100;
-    static const int separationRatio = 1000;
+    static const int cohesionRatio = 600;
+    static const int separationRatio = 20;
     static const int distance = 100;
     static const int wallRatio = 50;
     static const int wallDistance = 100;
-    static const int max_velocity = 3;
-    static constexpr float maxVelocityRatio = 0.8f;
+    static const int max_velocity = 2;
+    static constexpr float maxVelocityRatio = 0.6f;
 
     void move_boids();
     QVector2D cohesion(Boid b);
