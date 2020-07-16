@@ -1,11 +1,11 @@
 #include "boidswidget.h"
-#include "QDebug"
+#include <QDebug>
 
 BoidsWidget::BoidsWidget(QWidget *parent) : QWidget(parent),m_timer(this)
 {
      for(int i=0;i<listSize;i++){
          QPoint position(rand()%(parent->width()),rand()%(parent->height()));
-         QVector2D velocity(rand()%2,rand()%2);
+         QVector2D velocity(rand()%2+1,rand()%2+1);
          Boid tempBoid(position,velocity);
          boidList.append(tempBoid);
      }
@@ -38,27 +38,35 @@ void BoidsWidget::paintMoveBoids(){
 
 
 void BoidsWidget::move_boids(){
-    QVector2D v1,v2,v3;
+    QVector2D v1(0,0),v2(0,0),v3(0,0);
     for(int i=0;i<boidList.length();i++){
         Boid* b = &boidList[i];
         v1 = cohesion(*b);
-        v2 = alignment(*b);
-        v3 = separation(*b);
+        //v2 = alignment(*b);
+        //v3 = separation(*b);
 
         //qDebug() << "Before " << b->toString();
         //qDebug() << "Cohesion : "<< v1 << " / Alignement : "<<v2 << " / Separation : "<<v3;
-        b->velocity = v1 + v2 + v3;
+        //if(qAbs(v1.x()+v2.x()+v3.x())>0.1 || qAbs(v1.y()+v2.y()+v3.y()>0.1))
+            b->velocity += v1 + v2 + v3;
+        if(b->velocity.x()>max_velocity || b->velocity.x()<-max_velocity)b->velocity.setX(b->velocity.x()*velocity_ratio);
+        if(b->velocity.y()>max_velocity || b->velocity.y()<-max_velocity)b->velocity.setY(b->velocity.y()*velocity_ratio);
+
         b->position.setX(b->position.x()+b->velocity.x());
         b->position.setY(b->position.y()+b->velocity.y());
 
-        //Moving the boids to the opposite side if they cross the screen
-        if(b->position.x()>this->width()) b->position.setX(0);
-        else if(b->position.x()<0) b->position.setX(this->width());
+        //Moving the boids off the wall smoothly if they come too close
+        if(b->position.x()>this->width()-wallDistance)
+            b->velocity.setX(b->velocity.x()-qAbs(b->position.x()-this->width())/wallRatio);
+        else if(b->position.x()<wallDistance)
+            b->velocity.setX(b->velocity.x()+qAbs(b->position.x())/wallRatio);
 
-        if(b->position.y()>this->height())b->position.setY(0);
-        else if(b->position.y()<0) b->position.setY(this->height());
+        if(b->position.y()>this->height()-wallDistance)
+            b->velocity.setY(b->velocity.y()-qAbs(b->position.y()-this->height())/wallRatio);
+        else if(b->position.y()<wallDistance)
+            b->velocity.setY(b->velocity.y()+qAbs(b->position.y())/wallRatio);
 
-        //qDebug() << "After " << b->toString();
+       // qDebug() << "After " << b->toString();
     }
 
 }
@@ -67,20 +75,33 @@ void BoidsWidget::move_boids(){
 //For now all the boids are taken into account. TODO : only take the neighbours
 QVector2D BoidsWidget::cohesion(Boid b){
     QVector2D center;
+    int count=0;
 
     //Calculating the centre of mass of all other boids
     for(int i=0;i<boidList.length();i++){
         Boid tempBoid = boidList[i];
-        if(&b!=&tempBoid){
-            center.setX(center.x()+tempBoid.position.x());
-            center.setY(center.y()+tempBoid.position.y());
+        if(b!=tempBoid){
+            qreal tempDistance = qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2));
+            //qDebug() << "Distance : "<< tempDistance;
+            if(tempDistance<distance){
+                center.setX(center.x()+tempBoid.position.x());
+                center.setY(center.y()+tempBoid.position.y());
+                count++;
+            }
         }
     }
-    center/=(boidList.length()-1);
+    //If there are no boids around, don't change the velocity
+    if(count==0)
+        return QVector2D(0,0);
+
+    center/=count;
+    //qDebug()<<"Centre : "<<center;
+    //qDebug() <<"Position : "<<b.position;
 
     //Setting the result to make the boid move towards this centre by a certain %
     center.setX(center.x()-b.position.x());
     center.setY(center.y()-b.position.y());
+
     return center/cohesionRatio;
 }
 
@@ -88,8 +109,21 @@ QVector2D BoidsWidget::alignment(Boid b){
 
 }
 
+//This rule describes how a boid will try to keep a small distance away from other objects.
+//For now this rule only checks the distance with other boids. TODO : angle checking.
 QVector2D BoidsWidget::separation(Boid b){
-
+    QVector2D result(0,0);
+    for(int i=0;i<boidList.length();i++){
+        Boid tempBoid = boidList[i];
+        if(&b!=&tempBoid){
+            //qDebug() << qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2));
+            if(qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2))<distance){
+                result.setX(result.x()-(tempBoid.position.x()-b.position.x()));
+                result.setY(result.y()-(tempBoid.position.y()-b.position.y()));
+            }
+        }
+    }
+    return result/separationRatio;
 }
 
 BoidsWidget::~BoidsWidget(){

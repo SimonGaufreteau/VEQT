@@ -11,6 +11,9 @@ public:
     QString toString();
     QPoint position;
     QVector2D velocity;
+
+    bool operator==(Boid comp);
+    bool operator!=(Boid comp);
 };
 
 #endif // BOID_H
