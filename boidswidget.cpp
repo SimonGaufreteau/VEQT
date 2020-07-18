@@ -23,13 +23,25 @@ void BoidsWidget::paintEvent(QPaintEvent *event){
     for(int i=0;i<listSize;i++){
         Boid tempBoid = boidList[i];
         //Setting the shape for the boid and drawing it
-        QRectF rect = QRectF(tempBoid.position.x(), tempBoid.position.y(), boidWidth, boidHeight);
+        //Old method for a simple triangle
+        /*QRectF rect = QRectF(tempBoid.position.x(), tempBoid.position.y(), boidWidth, boidHeight);
         QPainterPath path;
         path.moveTo(rect.left() + (rect.width() / 2), rect.top());
         path.lineTo(rect.bottomLeft());
         path.lineTo(rect.bottomRight());
-        path.lineTo(rect.left() + (rect.width() / 2), rect.top());
-        painter.fillPath(path, QBrush(QColor ("blue")));
+        path.lineTo(rect.left() + (rect.width() / 2), rect.top());*/
+
+        //New method for an oriented triangle
+        QPainterPath path;
+        path.moveTo(tempBoid.position);
+        //qreal angle = qAtan((tempBoid.velocity.y()-tempBoid.position.y())/(tempBoid.velocity.x()-tempBoid.position.x()));
+        qreal angle = qAtan2(tempBoid.velocity.x(),tempBoid.velocity.y());
+        qreal newX = qCos(angle)*lineRatio+tempBoid.position.x();
+        qreal newY = qSin(angle)*lineRatio+tempBoid.position.y();
+        path.lineTo(newX,newY);
+        path.addEllipse(QPointF(newX,newY),1,1);
+        painter.setBrush(QBrush(QColor ("blue")));
+        painter.drawPath(path);
     }
 }
 
