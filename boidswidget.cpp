@@ -60,14 +60,15 @@ void BoidsWidget::paintMoveBoids(){
 
 
 void BoidsWidget::move_boids(){
-    QVector2D v1(0,0),v2(0,0),v3(0,0);
+    QVector2D v1(0,0),v2(0,0),v3(0,0),v4(0,0);
     for(int i=0;i<boidList.length();i++){
         Boid* b = &boidList[i];
         v1 = cohesion(*b);
         v2 = alignment(*b);
         v3 = separation(*b);
+        //v4 = getNoise(*b);
 
-        b->velocity += v1 + v2 + v3;
+        b->velocity += v1 + v2 + v3 + v4;
 
         //Checking for the max velocity
         if(b->velocity.x()>max_velocity || b->velocity.x()<-max_velocity)b->velocity.setX(b->velocity.x()*maxVelocityRatio);
@@ -168,6 +169,20 @@ QVector2D BoidsWidget::separation(Boid b){
         }
     }
     return result/separationRatio;
+}
+
+//Returns a noise for the given boid.
+//The noise's purpose is to make the boids "wiggle" like fishes.
+QVector2D BoidsWidget::getNoise(Boid b){
+    //A % of chance each frame to add some strengh to the most important velocity axe of the boid (i.e. it's direction)
+    if(rand()%100)return QVector2D();
+
+    if(qAbs(b.velocity.x())>qAbs(b.velocity.y())){
+        return QVector2D(b.velocity.x()*noiseRatio,0);
+    }
+    else{
+        return QVector2D(0,b.velocity.y()*noiseRatio);
+    }
 }
 
 BoidsWidget::~BoidsWidget(){
