@@ -5,7 +5,7 @@ PurpleRain::PurpleRain(QWidget *parent) : QWidget(parent),
 
 {
     //Drop : (194,40,231)
-    //BG : (234,172,249)
+    //BG : (253,243,255)
     for(int i=0;i<nb_rect;i++){
         int w = rand()%max_w+min_w;
         int h = (int)(w*max_h/max_w);
