@@ -20,27 +20,34 @@ BoidsWidget::BoidsWidget(QWidget *parent) : QWidget(parent),m_timer(this)
 void BoidsWidget::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
+    //BG : (253,243,255)
+    painter.fillRect(rect(),QBrush(QColor(253,243,255)));
+
     for(int i=0;i<listSize;i++){
         Boid tempBoid = boidList[i];
         //Setting the shape for the boid and drawing it
-        //Old method for a simple triangle
-        /*QRectF rect = QRectF(tempBoid.position.x(), tempBoid.position.y(), boidWidth, boidHeight);
-        QPainterPath path;
-        path.moveTo(rect.left() + (rect.width() / 2), rect.top());
-        path.lineTo(rect.bottomLeft());
-        path.lineTo(rect.bottomRight());
-        path.lineTo(rect.left() + (rect.width() / 2), rect.top());*/
-
         //New method for an oriented triangle
         QPainterPath path;
-        path.moveTo(tempBoid.position);
-        //qreal angle = qAtan((tempBoid.velocity.y()-tempBoid.position.y())/(tempBoid.velocity.x()-tempBoid.position.x()));
+
         qreal angle = qAtan2(tempBoid.velocity.x(),tempBoid.velocity.y());
-        qreal newX = qCos(angle)*lineRatio+tempBoid.position.x();
-        qreal newY = qSin(angle)*lineRatio+tempBoid.position.y();
+        qreal newX = qCos(angle)*boidHeight+tempBoid.position.x();
+        qreal newY = qSin(angle)*boidHeight+tempBoid.position.y();
+        path.moveTo(newX,newY);
+
+        //Line from velocity to the second point on the triangle
+        qreal angle2 = angle+M_PI_2;
+        qreal newX2 = tempBoid.position.x() + qCos(angle2)*boidWidth;
+        qreal newY2 = tempBoid.position.y() +qSin(angle2)*boidWidth;
+        path.lineTo(newX2,newY2);
+
+        angle2 = angle-M_PI_2;
+        newX2 = tempBoid.position.x() + qCos(angle2)*boidWidth;
+        newY2 = tempBoid.position.y() +qSin(angle2)*boidWidth;
+        path.lineTo(newX2,newY2);
         path.lineTo(newX,newY);
-        path.addEllipse(QPointF(newX,newY),1,1);
-        painter.setBrush(QBrush(QColor ("blue")));
+
+        //Boid : (194,40,231)
+        painter.setBrush(QBrush(QColor(194,40,231)));
         painter.drawPath(path);
     }
 }
@@ -60,7 +67,6 @@ void BoidsWidget::move_boids(){
         v2 = alignment(*b);
         v3 = separation(*b);
 
-        //qDebug() << "Cohesion : "<< v1 << " / Alignement : "<<v2 << " / Separation : "<<v3;
         b->velocity += v1 + v2 + v3;
 
         //Checking for the max velocity
@@ -68,18 +74,7 @@ void BoidsWidget::move_boids(){
         if(b->velocity.y()>max_velocity || b->velocity.y()<-max_velocity)b->velocity.setY(b->velocity.y()*maxVelocityRatio);
 
         b->position.setX(b->position.x()+b->velocity.x());
-        b->position.setY(b->position.y()+b->velocity.y());
-
-        //Moving the boids off the wall if they come too close
-        /*if(b->position.x()>this->width()-wallDistance)
-            b->velocity.setX(b->velocity.x()-qAbs(b->position.x()-this->width())/wallRatio);
-        else    if(b->position.x()<wallDistance)
-            b->velocity.setX(b->velocity.x()+qAbs(b->position.x())/wallRatio);
-
-        if(b->position.y()>this->height()-wallDistance)
-            b->velocity.setY(b->velocity.y()-qAbs(b->position.y()-this->height())/wallRatio);
-        else if(b->position.y()<wallDistance)
-            b->velocity.setY(b->velocity.y()+qAbs(b->position.y())/wallRatio);*/
+        b->position.setY(b->position.y()+b->velocity.y());        
 
         //Moving the boids to the opposite side of the screen
         if(b->position.x()>this->width())
@@ -166,8 +161,7 @@ QVector2D BoidsWidget::separation(Boid b){
     for(int i=0;i<boidList.length();i++){
         Boid tempBoid = boidList[i];
         if(&b!=&tempBoid){
-            //qDebug() << qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2));
-            if(qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2))<boidWidth){
+            if(qSqrt(qPow(b.position.x()-tempBoid.position.x(),2)+qPow(b.position.y()-tempBoid.position.y(),2))<separationDistance){
                 result.setX(result.x()-(tempBoid.position.x()-b.position.x()));
                 result.setY(result.y()-(tempBoid.position.y()-b.position.y()));
             }
@@ -177,6 +171,5 @@ QVector2D BoidsWidget::separation(Boid b){
 }
 
 BoidsWidget::~BoidsWidget(){
-    qDebug() << "Deleting the Boids";
 }
 

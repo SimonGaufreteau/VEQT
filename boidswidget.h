@@ -21,17 +21,15 @@ private:
 
     static const int listSize = 100;
     static const int time = 10;
-    static const int boidWidth = 20;
+    static const int boidWidth = 5;
     static const int boidHeight = 20;
     static const int cohesionRatio = 2000;
     static const int separationRatio = 20;
     static const int alignementRatio = 2000;
     static const int distance = 100;
-    static const int wallRatio = 50;
-    static const int wallDistance = 100;
-    static const int max_velocity = 2;
+    static const int separationDistance=15;
+    static constexpr float max_velocity = 2.5f;
     static constexpr float maxVelocityRatio = 0.6f;
-    static const int lineRatio = 20;
 
     void move_boids();
     QVector2D cohesion(Boid b);
